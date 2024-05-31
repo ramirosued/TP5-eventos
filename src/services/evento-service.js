@@ -1,11 +1,6 @@
-import ProvinceRepository from '../repositories/evento-repository';
+import ProvinceRepository from '../repositories/province-repository.js';
 export default class EventoService {
  
- getAllAsync = async () => {
- const repo = new ProvinceRepository();
- const returnArray = await repo.getAllAsync();
- return [returnArray,200];
- }
  
  getByIdAsync = async (id) => {
     const repo = new ProvinceRepository();

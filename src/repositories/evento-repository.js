@@ -1,13 +1,9 @@
 import pkg from 'pg'
-import provinces from '../entities/province.js';
+import Provinces from '../entities/provinces.js';
 
 const { Client, Pool } = pkg;
 export default class ProvinceRepository {
- getAllAsync = async () => {
- let returnArray = null;
-    returnArray = provinces;
- return returnArray;
- }
+ 
  getByIdAsync = async (id) => {
     let provinceEncontrada = provinces.find(province => province.id === id);
     return provinceEncontrada;

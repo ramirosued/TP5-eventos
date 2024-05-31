@@ -1,7 +1,6 @@
 import validacionesHelper from '../helpers/validaciones-Helper.js';
-import eventos from '../entities/province.js';
 import { Router } from "express";
-import EventoService from '../services/evento-service';
+import EventoService from '../services/evento-service.js';
 let router =Router();
 
 const  svc = new EventoService();
