@@ -13,15 +13,9 @@ app.use(express.json()); // Middleware para parsear y comprender JSON.
 
 app.use("/api/province", ProvinceRouter)
 
-app.use("/api/busquedaEvento", EventosRouter);
+app.use("/api/eventos", EventosRouter);
 
-app.get("/api/participantesEventosId", EventosRouter)
 
-app.post("/api/user/login", EventosRouter);
-
-app.put("/api/provincePU", EventosRouter);
-
-app.delete("/api/provinceD", EventosRouter);
 
 app.listen(port, () => {
 console.log(`Example app listening on port ${port}`)

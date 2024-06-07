@@ -1,30 +1,31 @@
 import validacionesHelper from '../helpers/validaciones-Helper.js';
-import { Router } from "express";
 import EventoService from '../services/evento-service.js';
-let router =Router();
 
+import { Router } from "express";
+let router = Router();
 const  svc = new EventoService();
-router.get("/api/busquedaEvento", async(req,res)=>{
+
+
+router.get("", async(req,res)=>{
    const name = req.query.Name;
    const category = req.query.Category; 
    const date = req.query.Date; 
    const tag = req.query.Tag; 
-
-   const resArray = await svc.getAllAsync(name,category,date,tag);
+   const resArray = await svc.getByIdAsync(name,category,date,tag);
    res.status(resArray[1]).send(resArray[0]);
 })
 
-router.get("/api/participantesEventosId", async(req,res)=>{
-    const id = parseInt(req.query.id); 
-    const name = parseInt(req.query.firstName); 
-    const lastName = parseInt(req.query.lastName); 
-    const username = parseInt(req.query.username); 
-    const attended = parseInt(req.query.attended); 
-
-   const resArray = await svc.getAllAsync(id,name,lastName,username,attended);
+router.get("/:id", async(req,res)=>{
+    const id = req.params.id; 
+    console.log(id);
+   const resArray = await svc.getEventById(id);
    res.status(resArray[1]).send(resArray[0]);
 })
 
+
+
+
+//hasta aca
 router.post("/api/user/login", async(req,res)=>{
     const date = parseInt(req.query.Date); 
    const resArray = await svc.getAllAsync(date);

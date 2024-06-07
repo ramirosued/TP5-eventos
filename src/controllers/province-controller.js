@@ -1,6 +1,5 @@
 import validacionesHelper from '../helpers/validaciones-Helper.js';
 import PropvinceService from '../services/province-service.js';
-import EventoService from '../services/province-service.js';
 
 import { Router } from "express";
 let router = Router();
@@ -12,24 +11,21 @@ router.get("", async(req,res)=>{
     res.status(resArray[1]).send(resArray[0]);
  })
  
- router.get("/api/provinces",async(req,res) =>{
-     const id = parseInt(req.query.id); 
+ router.get("/:id",async(req,res) =>{
+     const id = parseInt(req.params.id); 
      const resArray = await svc.getByIdAsync(id)
      res.status(resArray[1]).send(resArray[0]); 
  })
  
- router.post("/api/provinceP", async(req, res) => {
-     let nombre = validacionesHelper.getStringOrDefault(req.body.name);
-     let full_name = validacionesHelper.getStringOrDefault(req.body.full_name);
-     let latitude = validacionesHelper.getIntegerOrDefault(req.body.latitude);
-     let longitude = validacionesHelper.getIntegerOrDefault(req.body.longitude);
-     let display_order = validacionesHelper.getIntegerOrDefault(req.body.display_order);
- 
-     const resArray = await svc.createAsync(nombre, full_name, latitude, longitude, display_order)
+ router.post("", async(req, res) => {
+    let body = req.body;
+     const resArray = await svc.createAsync(body)
      res.status(resArray[1]).send(resArray[0]); 
  
  });
  
+
+ //hasta aca
  router.put("/api/provincePU", async(req, res) => {
      const id = req.body.id;
  

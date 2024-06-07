@@ -1,11 +1,9 @@
 {
   "name": "tp5-eventos",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-
   },
   "author": "",
   "license": "ISC",
@@ -16,10 +14,8 @@
     "http-status-codes": "^2.3.0",
     "nodemon": "^3.1.0",
     "pg": "^8.11.5"
-  
   },
-  
-    "type":"module"
-  
+  "type": "module",
+  "devDependencies": {},
+  "description": ""
 }
-

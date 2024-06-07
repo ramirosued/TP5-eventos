@@ -1,6 +1,6 @@
 const config = {
 host: "localhost",
-database : "eventos",
+database : "EventosSQL",
 user : "postgres",
 password : "root",
 port : 5432

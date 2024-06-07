@@ -1,27 +1,35 @@
-import ProvinceRepository from '../repositories/province-repository.js';
+import EventosRepository from '../repositories/evento-repository.js';
 export default class EventoService {
  
  
- getByIdAsync = async (id) => {
-    const repo = new ProvinceRepository();
-    const entity = await repo.getByIdAsync(id);
+
+ getByIdAsync = async (name,category,date,tag) => {
+    const repo = new EventosRepository();
+    const entity = await repo.buscarEvento(name,category,date,tag);
     if(entity){
       return [entity,200];
   } else
     {
-     return ["No se encontro la provincia",404];
+     return ["No se encontro ningun evento",404];
     }    
 }
- createAsync = async (name, full_name, latitude, longitude, display_order) => {
-    const repo = new ProvinceRepository();
-    const createdEntity = await repo.createAsync(name, full_name, latitude, longitude, display_order);
+
+ getEventById = async (id) => {
+    const repo = new EventosRepository();
+    console.log(id);
+    const createdEntity = await repo.buscarEventoById(id);
+    
     if(createdEntity!=null){
-      return ["Operacion exitosa",200];
+      return [createdEntity,200];
     }else{
-      return ["No se pudo crear la provincia", 404];
+      return ["No se pudo encontrar el evento"];
 
     }
  }
+ 
+
+
+ //hasta aca
  updateAsync = async (id, name, full_name, latitude, longitude, display_order) => {
     const repo = new ProvinceRepository();
     const updateEntity = await repo.updateAsync(id, name, full_name, latitude, longitude, display_order);

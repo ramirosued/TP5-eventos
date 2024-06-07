@@ -1,79 +1,52 @@
+import config from '../config/dbConfig.js';
 import pkg from 'pg'
-import Provinces from '../entities/provinces.js';
+const { Client } = pkg;
+const client = new Client(config);
 
-const { Client, Pool } = pkg;
-export default class ProvinceRepository {
- 
- getByIdAsync = async (id) => {
-    let provinceEncontrada = provinces.find(province => province.id === id);
-    return provinceEncontrada;
- }
+await client.connect();
 
- createAsync = async (nombre, full_name, latitude, longitude, display_order) => {
-    if (!nombre || !full_name || !latitude || !longitude || !display_order || nombre.length<3 || full_name.length<3) {
-    } else {
-        let nuevaProvincia = {
-            id: provinces.length + 1,
-            name: nombre,
-            full_name: full_name,
-            latitude: latitude,
-            longitude: longitude,
-            display_order: display_order
-        };
-        provinces.push(nuevaProvincia);
-        return nuevaProvincia;
+export default class EventosRepository {
+    buscarEvento = async (name, category, date, tag) => {
+
+        let sql = 'SELECT * FROM events '; // Inicializa la consulta SQL
+
+        // Agrega condiciones a la consulta SQL basadas en los parámetros proporcionados
+        const params = [];
+        if (name) {
+            sql += ' AND name ILIKE $1';
+            params.push(`%${name}%`);
+        }
+        if (category) {
+            sql += ' AND category ILIKE $2';
+            params.push(`%${category}%`);
+        }
+        if (date) {
+            sql += ' AND start_date = $3';
+            params.push(date);
+        }
+        if (tag) {
+            sql += ' AND tags ILIKE $4';
+            params.push(`%${tag}%`);
+        }
+
+        // Ejecuta la consulta SQL con los parámetros correspondientes
+        const result = await client.query(sql, params);
+        console.log('Consulta SQL:', sql, 'Parámetros:', params);
+
+        // Devuelve los resultados de la consulta
+        return result.rows;
     }
-    return nuevaProvincia;
- }
 
- updateAsync = async (id, name,full_name, latitude, longitude, display_order) => {
-    let devolucion = 0
-    if (provinces.find(province => province.id === id) != undefined)
-    {
-        if(name !== undefined && full_name !== undefined && latitude !== undefined && longitude !== undefined && display_order !==undefined)
-        {
-            if(name.length>3 && full_name.length > 3)
-            {
-                const index = provinces.findIndex(province => province.id === id);
-                provinces[index] = 
-                {
-                    id: id,
-                    name: name,
-                    full_name: full_name,
-                    latitude: latitude,
-                    longitude: longitude,
-                    display_order: display_order
-                };
-                devolucion = 1
-               return 1 ;
-            } else  
-            {
-                devolucion = 2;
-                return devolucion;
-            }    
-        }else 
-        {
-            devolucion = 2;
-            return devolucion;
-        }  
-    }
-    else
-    {
-        devolucion = 3;
-        return devolucion;
-    }
- }
+    buscarEventoById = async (id) => {
+        let sql = 'SELECT * FROM events WHERE id = $1'; 
+        const values = [id];
+        console.log(id);
+        let result = await client.query(sql, values); 
+        await client.end(); 
+        console.log(result.rows[0]);
 
- deleteByIdAsync = async (id) => {
-    let sePudo= 0;
-    let idProvincia = provinces.findIndex(province => province.id === id);
-    if (idProvincia!=undefined) { 
-        provinces.splice(idProvincia,1);
-        sePudo = 1;
-        return sePudo;
-    } else {
-        sePudo = 0
-       return sePudo;
-    }  
- }
+        return (result.rows);
+    }
+    
+
 }
