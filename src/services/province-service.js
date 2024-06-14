@@ -10,13 +10,33 @@ export default class PropvinceService {
  getByIdAsync = async (id) => {
     const repo = new ProvinceRepository();
     const returnArray = await repo.provinciaById(id);
-    return [returnArray,200];
+    if (returnArray.length>0){
+        return [returnArray,200];
+    }else{
+        return ["Provincia no encontrada",404];
+
+    }
     }
 
-    //hecho por la mitad
+    //7-Post
     createAsync = async (body) => {
         const repo = new ProvinceRepository();
         const returnArray = await repo.createProvincia(body);
         return returnArray;
-        }
+    }
+
+
+    updateAsync = async (body) => {
+        const repo = new ProvinceRepository();
+        const returnArray = await repo.ModificarProvincia(body);
+        return returnArray;
+
+    }
+
+    
+    deleteByIdAsync = async (id) => {
+        const repo = new ProvinceRepository();
+        const returnArray = await repo.elimianrProvincia(id);
+        return returnArray;
+    }
 }

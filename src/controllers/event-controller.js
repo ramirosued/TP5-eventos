@@ -5,16 +5,26 @@ import { Router } from "express";
 let router = Router();
 const  svc = new EventoService();
 
+//1
+// router.get("", async(req,res)=>{
+//    const name = req.query.Name;
+//    const category = req.query.Category; 
+//    const date = req.query.Date; 
+//    const tag = req.query.Tag; 
+//    const resArray = await svc.getEvents(name,category,date,tag);
+//    res.status(resArray[1]).send(resArray[0]);
+// })
 
-router.get("", async(req,res)=>{
-   const name = req.query.Name;
-   const category = req.query.Category; 
-   const date = req.query.Date; 
-   const tag = req.query.Tag; 
-   const resArray = await svc.getByIdAsync(name,category,date,tag);
+
+//2-3
+router.get('', async(req,res)=>{
+    const params = req.query; 
+   const resArray = await svc.getByIdAsync(params);
    res.status(resArray[1]).send(resArray[0]);
 })
 
+
+//4
 router.get("/:id", async(req,res)=>{
     const id = req.params.id; 
     console.log(id);

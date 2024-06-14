@@ -1,28 +1,32 @@
 import EventosRepository from '../repositories/evento-repository.js';
 export default class EventoService {
- 
- 
 
- getByIdAsync = async (name,category,date,tag) => {
-    const repo = new EventosRepository();
-    const entity = await repo.buscarEvento(name,category,date,tag);
-    if(entity){
-      return [entity,200];
-  } else
-    {
-     return ["No se encontro ningun evento",404];
-    }    
+getEvents = async()=>{
+
 }
-
+ 
+//3
+ getByIdAsync = async (params) => {
+    const repo = new EventosRepository();
+    const entity = await repo.searchAsync(params);
+    let resArray;
+        if (entity != '') {
+            resArray = [entity, 200];
+        } else {
+            resArray = ["No se encuentran eventos", 404];
+        }
+        return resArray;
+}
+//4
  getEventById = async (id) => {
     const repo = new EventosRepository();
     console.log(id);
-    const createdEntity = await repo.buscarEventoById(id);
+    const entity = await repo.buscarEventoById(id);
     
-    if(createdEntity!=null){
-      return [createdEntity,200];
+    if(entity!=''){
+      return [entity,200];
     }else{
-      return ["No se pudo encontrar el evento"];
+      return ["No se pudo encontrar el evento", 404];
 
     }
  }

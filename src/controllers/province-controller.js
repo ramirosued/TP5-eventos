@@ -26,21 +26,15 @@ router.get("", async(req,res)=>{
  
 
  //hasta aca
- router.put("/api/provincePU", async(req, res) => {
-     const id = req.body.id;
- 
-     let name = req.body.name;
-     let full_name = req.body.full_name;
-     let latitude = req.body.latitude;
-     let longitude = req.body.longitude;
-     let display_order = req.body.display_order;
-     const resArray = await svc.updateAsync(id, name, full_name, latitude, longitude, display_order);
- 
+ router.put("", async(req, res) => {
+    let body = req.body;
+     const resArray = await svc.updateAsync(body);
      res.status(resArray[1]).send(resArray[0]); 
+     
  });
  
- router.delete("/api/provinceD", async(req, res) => {
-     const id = validacionesHelper.getIntegerOrDefault(req.query.id);
+ router.delete("/:id", async(req, res) => {
+     const id = parseInt(req.params.id);
      const resArray = await svc.deleteByIdAsync(id);
      res.status(resArray[1]).send(resArray[0]);
  });
