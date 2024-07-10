@@ -67,6 +67,12 @@ UpdateEventAsync = async(body)=>{
   return returnArray;
 }
 
+DeleteEventAsync = async(id)=>{
+  const repo = new EventosRepository();
+  const returnArray = await repo.EliminarEvento(id);
+  return returnArray;
+}
+
 }
 
  //hasta aca

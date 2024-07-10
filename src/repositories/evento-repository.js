@@ -212,20 +212,20 @@ ModificarEvento = async(body) => {
       const query = `
           UPDATE events
           SET 
-              id_event_location = $4,
-              start_date = $5,
-              duration_in_minutes = $6,
-              price = $7,
-              enabled_for_enrollment = $8,
-              max_assistance = $9,
-              id_creator_user = $10,
-              id_event_category = $3,
-              name = $1,
-              description = $2
+              id_event_location = $1,
+              start_date = $2,
+              duration_in_minutes = $3,
+              price = $4,
+              enabled_for_enrollment = $5,
+              max_assistance = $6,
+              id_creator_user = $7,
+              id_event_category = $8,
+              name = $9,
+              description = $10
 
           WHERE Id = $11`;
 
-      const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user, id];
+      const values = [id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user, id_event_category, name, description, id];
       const result = await client.query(query, values);
 
       if (result.rowCount === 0) {
@@ -239,6 +239,48 @@ ModificarEvento = async(body) => {
   } finally {
       await client.end();
   }
+}
+
+
+EliminarEvento = async(id) => {
+  const client = new Client(config);
+    await client.connect();
+
+    try {
+      const deleteEvent_tags = `
+        DELETE FROM event_tags
+        WHERE id_event = $1`;
+
+    const valuesEvent_tags = [id];
+    const resultEvent_tags = await client.query(deleteEvent_tags, valuesEvent_tags);
+
+    const deleteEvent_enrollments = `
+        DELETE FROM event_enrollments
+        WHERE id_event = $1`;
+
+    const valuesEvent_enrollments = [id];
+    const resultEvent_enrollments = await client.query(deleteEvent_enrollments, valuesEvent_enrollments);
+
+
+        const deleteQuery = `
+            DELETE FROM events
+            WHERE id = $1`;
+
+        const values = [id];
+        const result = await client.query(deleteQuery, values);
+        
+
+        if (result.rowCount === 0) {
+            return[`Evento con el id ${id} no encontrado`, 404 ];
+        }
+
+        return ["Evento eliminado correctamente", 200 ];
+    } catch (error) {
+        console.error("Error deleting event:", error);
+        throw { message: error.message || "Internal server error", status: error.status || 500 };
+    } finally {
+        await client.end();
+    }
 }
 }
 

@@ -67,6 +67,15 @@ router.put('', async(req, res) => {
     res.status(resArray[1]).send(resArray[0]); 
 });
 
+router.delete('/:id', async(req, res) => {
+    const id = req.params.id;
+    const resArray = await svc.DeleteEventAsync(id);
+    res.status(resArray[1]).send(resArray[0]); 
+});
+
+
+
+
 //hasta aca
 router.post("/api/user/login", async(req,res)=>{
     const date = parseInt(req.query.Date); 
@@ -106,11 +115,6 @@ router.get("/api/province", async(req,res)=>{
  
  
  
- router.delete("/api/provinceD", async(req, res) => {
-     const id = validacionesHelper.getIntegerOrDefault(req.query.id);
-     const resArray = await svc.deleteByIdAsync(id);
-     res.status(resArray[1]).send(resArray[0]);
- });
 
  
 
@@ -147,11 +151,6 @@ router.get("/api/province", async(req,res)=>{
      res.status(resArray[1]).send(resArray[0]); 
  });
  
- router.delete("/api/eventoD", async(req, res) => {
-     const id = validacionesHelper.getIntegerOrDefault(req.query.id);
-     const resArray = await svc.deleteByIdAsync(id);
-     res.status(resArray[1]).send(resArray[0]);
- });
 
 
 
