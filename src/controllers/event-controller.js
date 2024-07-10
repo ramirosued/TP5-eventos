@@ -61,6 +61,12 @@ router.get("/:id/enrollment", async (req, res) => {
     res.status(resArray[1]).send(resArray[0]); 
 });
 
+router.put('', async(req, res) => {
+    const body = req.body;
+    const resArray = await svc.UpdateEventAsync(body);
+    res.status(resArray[1]).send(resArray[0]); 
+});
+
 //hasta aca
 router.post("/api/user/login", async(req,res)=>{
     const date = parseInt(req.query.Date); 
@@ -98,18 +104,7 @@ router.get("/api/province", async(req,res)=>{
  
  });
  
- router.put("/api/provincePU", async(req, res) => {
-     const id = req.body.id;
  
-     let name = req.body.name;
-     let full_name = req.body.full_name;
-     let latitude = req.body.latitude;
-     let longitude = req.body.longitude;
-     let display_order = req.body.display_order;
-     const resArray = await svc.updateAsync(id, name, full_name, latitude, longitude, display_order);
- 
-     res.status(resArray[1]).send(resArray[0]); 
- });
  
  router.delete("/api/provinceD", async(req, res) => {
      const id = validacionesHelper.getIntegerOrDefault(req.query.id);

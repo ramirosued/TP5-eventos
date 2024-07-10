@@ -130,43 +130,119 @@ getEventEnrollment = async (enrollment) => {
     return returnEntity;
   }
 
-
+//8
   createEvento = async(body)=>{
     let resArray;
+    let id_event_location = body.id_event_location;
+    let start_date = body.start_date;
+    let duraction_in_minutes = body.duraction_in_minutes;
+    let price = body.price;
+    let enabled_for_enrollment = body.enabled_for_enrollment;
+    let max_assistance = body.max_assistance;
+    let id_creator_user = body.id_creator_user;
+    let id_event_category = body.id_event_category;
+    let name = body.name;
+    let description = body.description;
+
+    const resultCapacity = await client.query(`SELECT max_capacity FROM event_locations WHERE id = $1`, [parseInt(id_event_location)]);
+    const max_capacity = resultCapacity.rows[0].max_capacity;
 
     try{
-        let id_event_location = body.id_event_location;
-        let start_date = body.start_date;
-        let duraction_in_minutes = body.duraction_in_minutes;
-        let price = body.price;
-        let enabled_for_enrollment = body.enabled_for_enrollment;
-        let max_assistence = body.max_assistence;
-        let id_creator_user = body.id_creator_user;
-        let id_event_category = body.name;
-        let name = body.id_event_category;
-        let description = body.id_event_category;
-
-
         const sql = `
-            INSERT INTO provinces
-                (id_event_location, start_date, duraction_in_minutes, price, enabled_for_enrollment,max_assistence,id_creator_user,id_event_category,name,description)
-            VALUES
-                ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`;
-        const values = [id_event_location, start_date, duraction_in_minutes, price,enabled_for_enrollment,max_assistence,id_creator_user,id_event_category,name,description];
+        INSERT INTO events (id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user, id_event_category, name, description)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`;
+        const values = [parseInt(id_event_location), start_date, parseInt(duraction_in_minutes), parseInt(price), parseInt(enabled_for_enrollment), parseInt(max_assistance), parseInt(id_creator_user), parseInt(id_event_category), name, description];
         const result = await client.query(sql, values);
-        if(result.rowCount) resArray=["created",200]
-        else{
-            resArray=["No se pudo crear",404]
+       
+        console.log(max_capacity);
+        if(name.length<3 || description.length<3 || price<0 || duraction_in_minutes <0 || max_capacity<=parseInt(max_assistance))
+        {
+          resArray=["Bad request",400]
+        
+        }else{
+          resArray=["created",200]
+
         }
-        }
+      }
         catch (error){
-            resArray = ["No se pudo crear la provincia",404];
+          if (error.code === '23503' && error.constraint === 'events_id_creator_user_fkey') {
+            resArray = ["El id del usuario que lo crea no existe no existe", 400];
+          }
+            else{
+              resArray = ["Faltan datos",404];
+
+            }
 
         }
     return resArray
   }
 
+
+
+ModificarEvento = async(body) => {
+  const client = new Client(config);
+  await client.connect();
+  let id = body.id;
+  let id_event_location = body.id_event_location;
+  let start_date = body.start_date;
+  let duration_in_minutes = body.duration_in_minutes;
+  let price = body.price;
+  let enabled_for_enrollment = body.enabled_for_enrollment;
+  let max_assistance = body.max_assistance;
+  let id_creator_user = body.id_creator_user;
+  let id_event_category = body.id_event_category;
+  let name = body.name;
+  let description = body.description;
+  
+  const resultCapacity = await client.query(`SELECT max_capacity FROM event_locations WHERE id = $1`, [parseInt(id_event_location)]);
+  const max_capacity = resultCapacity.rows[0].max_capacity;
+
+  const resultUsuario = await client.query(`SELECT id_creator_user FROM events WHERE Id = $1`, [parseInt(id)]);
+  const usuario = resultUsuario.rows[0].id_creator_user; 
+  console.log(usuario);
+  try {
+   
+      if (name.length < 3 || description.length < 3 ||price < 0 || duration_in_minutes < 0 || max_assistance < 0 || max_assistance > parseInt(max_capacity)) {
+          return ["Bad request", 400];
+      }else if(parseInt(usuario)!=id_creator_user){
+      return ["Usuario no autorizado", 400];
+
+      }
+
+      const query = `
+          UPDATE events
+          SET 
+              id_event_location = $4,
+              start_date = $5,
+              duration_in_minutes = $6,
+              price = $7,
+              enabled_for_enrollment = $8,
+              max_assistance = $9,
+              id_creator_user = $10,
+              id_event_category = $3,
+              name = $1,
+              description = $2
+
+          WHERE Id = $11`;
+
+      const values = [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user, id];
+      const result = await client.query(query, values);
+
+      if (result.rowCount === 0) {
+          throw new Error(`El evento con el ID ${id} no existe`);
+      }
+
+      return ["updated", 200];
+  } catch (error) {
+      console.error("Error updating event:", error);
+      return [error.message, 400];  
+  } finally {
+      await client.end();
+  }
 }
+}
+
+
 
 
 
