@@ -73,6 +73,13 @@ DeleteEventAsync = async(id)=>{
   return returnArray;
 }
 
+RatingEvento = async(eventId,eventRating,bodyDescripcion) =>
+{
+    const repo = new EventosRepository();
+    const enrollments = await repo.RatingEvento(eventId,eventRating,bodyDescripcion);
+    return enrollments;
+};
+
 }
 
  //hasta aca

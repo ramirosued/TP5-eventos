@@ -282,6 +282,43 @@ EliminarEvento = async(id) => {
         await client.end();
     }
 }
+
+//10
+RatingEvento = async (eventId,eventRating,bodyDescripcion) => {
+  const client = new Client(config);
+  await client.connect();    
+  const resultFecha = await client.query(`SELECT start_date FROM events WHERE id = $1`, [parseInt(eventId)]);
+  const fechaEvento = resultFecha.rows[0].start_date;
+//busco que el id 
+  const fechaActual = new Date();
+
+  if (fechaEvento < fechaActual) {
+    console.log(fechaEvento)
+    if(eventRating>=0 && eventRating<=10)
+    {
+        try 
+        {
+          let sql = `
+          INSERT INTO event_enrollments (id_user,registration_date_time,attended,rating,id_event,description,observations) 
+          VALUES (1, now()::timestamp, 0,$3,$1,'Registered for ' ||(select name from events where events.id = $1),$2)`
+  
+          const values = [eventId,bodyDescripcion,eventRating];
+         const result = await client.query(sql, values);
+        
+          return ["Evento rankeado correctamente",200]
+        } catch(error) {
+          return [error.message,400]
+      }
+    }
+    else{
+      return["Mal ingresado el rating",400]
+    }
+ 
+}else{
+  return["El evento no ha finalizado aun",400]
+}
+};
+
 }
 
 
