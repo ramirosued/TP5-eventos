@@ -27,10 +27,7 @@ export class UserRepository {
         return regex.test(username);
       }
       if (first_name.lenght < 3 || last_name.length < 3) {
-        return [
-          "Nombre o apellido estan vacion o tienen menos de 3 caracteres",
-          400,
-        ];
+        return ["Nombre o apellido estan vacion o tienen menos de 3 caracteres",400,];
       } else {
         if (!validarEmail(username)) {
           return ["No se valido el email", 400];

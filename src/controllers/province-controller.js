@@ -5,7 +5,7 @@ import { Router } from "express";
 let router = Router();
 const  svc = new PropvinceService();
 
-
+//7
 router.get("", async(req,res)=>{
     const resArray = await svc.getAllAsync();
     res.status(resArray[1]).send(resArray[0]);
@@ -24,9 +24,7 @@ router.get("", async(req,res)=>{
  
  });
  
-
- //hasta aca
- router.put("", async(req, res) => {
+     router.put("", async(req, res) => {
     let body = req.body;
      const resArray = await svc.updateAsync(body);
      res.status(resArray[1]).send(resArray[0]); 
