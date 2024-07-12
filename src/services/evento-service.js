@@ -25,12 +25,13 @@ getEvents = async()=>{
     try {
       const entity = await repo.buscarEventoById(id);
       console.log(entity)
-      if(entity!=''){
+      if(entity!=' '){
         return [entity,200];
       }else{
         return ["No se pudo encontrar el evento", 404];
       }
-    } catch {
+    } catch(error) {
+      console.log(error.message)
       return ['Error', 400]
     }
  }
@@ -72,7 +73,7 @@ DeleteEventAsync = async(id)=>{
   const returnArray = await repo.EliminarEvento(id);
   return returnArray;
 }
-
+//10
 RatingEvento = async(eventId,eventRating,bodyDescripcion) =>
 {
     const repo = new EventosRepository();
@@ -80,7 +81,54 @@ RatingEvento = async(eventId,eventRating,bodyDescripcion) =>
     return enrollments;
 };
 
+getEventoById = async (id) => {
+  const repo = new EventosRepository();
+  const returnArray = await repo.getEventoById(id);
+  return returnArray;
 }
 
- //hasta aca
+getQuantInscriptions = async (idEvent) => {
+  const repo = new EventosRepository();
+  const returnArray = await repo.getQuantInscriptions(idEvent);
+  return returnArray;
+}
+
+
+getEventStartDate = async (idEvent) => {
+  const repo = new EventosRepository();
+  const returnArray = await repo.getEventStartDate(idEvent);
+  return returnArray;
+}
+//9
+postInscribeEvent = async (idEvent, idUser) => {
+  const repo = new EventosRepository();
+  let response = {};
+  const event = await repo.getEventoById(idEvent)
+  if(!event){
+      response.error = 404
+      response.errorMessage = `No se encontraron resultados para el id: ${idEvent}.`
+      return response
+  }
+  const quant = await this.getQuantInscriptions(idEvent)
+  if(quant.count >= event.max_assistence) {
+      response.error = 400
+      response.errorMessage = `Se llenaron todos los espacios para el evento: ${idEvent}`
+      return response
+  }
+  const date = await repo.getEventStartDate(idEvent)
+  console.log(date)
+  if(date.start_date < new Date()) {
+      response.error = 400
+      response.errorMessage = `No se pudo completar su inscripcion debido a que el evento (${idEvent}), ya comenzó.`
+      return response
+  }
+  response.data = await repo.postInscribeEvent(idEvent, idUser);
+  return response;
+}
+
+
+
+
+}
+
  
