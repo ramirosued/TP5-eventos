@@ -2,7 +2,7 @@ const config = {
 host: "localhost",
 database : "EventosSQL",
 user : "postgres",
-password : "root",
+password : "sued",
 port : 5432
 }
 

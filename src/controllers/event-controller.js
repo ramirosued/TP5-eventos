@@ -1,7 +1,8 @@
 import validacionesHelper from '../helpers/validaciones-Helper.js';
 import EventoService from '../services/evento-service.js';
 import jwt from 'jsonwebtoken'
-import {token} from '../repositories/user-repository.js';
+import AuthMiddleware from "../auth/authMiddleware.js";
+
 const secretKey = "ClaveSecreta3000$"; 
 
 
@@ -60,110 +61,35 @@ router.get("/:id/enrollment", async (req, res) => {
   });
 
   //8
- router.post('', async (req, res) => {
-    const bearerHeader = req.headers['authorization'];
+ router.post('',AuthMiddleware,async (req, res) => {
     let body = req.body;
+    const resArray = await svc.createEventAsync(body);
+    res.status(resArray[1]).send(resArray[0]);
 
-    try {
-
-        // Obtener el token JWT del encabezado Authorization
-        if (typeof bearerHeader === 'undefined') {
-            return res.status(401).json({ message: 'Token no proporcionado' });
-        }
-
-        const bearer = bearerHeader.split(' ');
-        const token = bearer[1];
-         
-        console.log("Token JWT recibido:", token);
-
-        // Verificar el token JWT de forma asincrónica
-        const payload = await jwt.verify(token, secretKey);
-
-
-        // Si la verificación es exitosa, proceder con la creación del evento
-        const resArray = await svc.createEventAsync(body);
-
-        // Enviar la respuesta según el resultado de la operación
-        res.status(resArray[1]).send(resArray[0]);
-
-    } catch (error) {
-        console.error("Error durante la verificación del token:", error.message);
-        // Manejar errores de autenticación o cualquier otro error
-        return res.status(401).json({ message: 'Token inválido' });
-    }
 });
 
 
-router.put('', async (req, res) => {
-    const bearerHeader = req.headers['authorization'];
+router.put('',AuthMiddleware, async (req, res) => {
     const body = req.body;
-
-    try {
-
-        // Obtener el token JWT del encabezado Authorization
-        if (typeof bearerHeader === 'undefined') {
-            return res.status(401).json({ message: 'Token no proporcionado' });
-        }
-
-        const bearer = bearerHeader.split(' ');
-        const token = bearer[1];
-         
-        console.log("Token JWT recibido:", token);
-
-        // Verificar el token JWT de forma asincrónica
-        const payload = await jwt.verify(token, secretKey);
-
-
-        // Si la verificación es exitosa, proceder con la creación del evento
         const resArray = await svc.UpdateEventAsync(body);
-
-        // Enviar la respuesta según el resultado de la operación
         res.status(resArray[1]).send(resArray[0]);
 
-    } catch (error) {
-        console.error("Error durante la verificación del token:", error.message);
-        // Manejar errores de autenticación o cualquier otro error
-        return res.status(401).json({ message: 'Token inválido' });
-    }
+    
 });
 
 
 
-
-router.delete('/:id', async (req, res) => {
-    const bearerHeader = req.headers['authorization'];
+router.delete('/:id',AuthMiddleware, async (req, res) => {
     const id = req.params.id;
-    try {
-
-        // Obtener el token JWT del encabezado Authorization
-        if (typeof bearerHeader === 'undefined') {
-            return res.status(401).json({ message: 'Token no proporcionado' });
-        }
-
-        const bearer = bearerHeader.split(' ');
-        const token = bearer[1];
-         
-        console.log("Token JWT recibido:", token);
-
-        // Verificar el token JWT de forma asincrónica
-        const payload = await jwt.verify(token, secretKey);
-
-
-        // Si la verificación es exitosa, proceder con la creación del evento
+    
         const resArray = await svc.DeleteEventAsync(id);
 
-        // Enviar la respuesta según el resultado de la operación
         res.status(resArray[1]).send(resArray[0]);
-
-    } catch (error) {
-        console.error("Error durante la verificación del token:", error.message);
-        // Manejar errores de autenticación o cualquier otro error
-        return res.status(401).json({ message: 'Token inválido' });
-    }
+   
 });
 
 
-router.patch('/:id/enrollment/:entero', async(req, res) => {
+router.patch('/:id/enrollment/:entero',AuthMiddleware, async(req, res) => {
     const bodyDescripcion = req.body.observations;
     const eventId = req.params.id;
     const eventRating = req.params.entero;
@@ -185,7 +111,7 @@ router.post("/:id/enrollment", async (req, res) => {
 
             // Verificar el token JWT de forma asincrónica
             const payloadOriginal = await jwt.verify(token, secretKey);
-            console.log(payloadOriginal);
+            console.log(payloadOriginal.id);
 
             // Proceder con la inscripción al evento utilizando el ID del usuario del token
             const response = await svc.postInscribeEvent(idEvent, payloadOriginal.id);

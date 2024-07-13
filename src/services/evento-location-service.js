@@ -18,16 +18,21 @@ export default class EventLocationService{
         let resArray = repo.createAsync(body);
         return resArray;
     };
-    putAsync = async (body) => {
+    
+
+    async UpdateEvLoc(EvLoc){
         const repo = new EventLocationRepository();
-        let resArray = repo.putAsync(body);
-        return resArray;
-    };
-    deleteAsync = async (id) =>{
-        const repo = new EventLocationRepository();
-        const resArray= await repo.deleteAsync(id);
-        return resArray;
+        await repo.UpdateEvLoc(EvLoc);
+        return "Actualizado correctamente"
     }
-  
+
+    async deleteEvLoc(id){
+        const repo = new EventLocationRepository();
+        await repo.deleteEvLoc(id);
+        return "Eliminado correctamente"
+        
+
+    }
+
        
 }
