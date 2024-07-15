@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import EventosRouter from "./controllers/event-controller.js";
-import ProvinceRouter from "./controllers/province-controller.js";
-import UserRouter from "./controllers/user-controller.js";
-import LocationRouter from "./controllers/location-controller.js";
-import EventCategoryRouter from "./controllers/evento-category-controller.js";
-import EventLocationRouter from "./controllers/evento-locations-controller.js";
+import EventosRouter from "./src/controllers/event-controller.js";
+import ProvinceRouter from "./src/controllers/province-controller.js";
+import UserRouter from "./src/controllers/user-controller.js";
+import LocationRouter from "./src/controllers/location-controller.js";
+import EventCategoryRouter from "./src/controllers/evento-category-controller.js";
+import EventLocationRouter from "./src/controllers/evento-locations-controller.js";
 const app = express();
 const port = 3000; // El puerto 3000 (http://localhost:3000)
 // Agrego los Middlewares
